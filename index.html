@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>TO DO LIST</title>
+</head>
+
+<body>
+    <h1 class="app-title">to do list</h1>
+    <div class="container">
+        <div class="wrapper">
+            <input type="text" name="task-to-do" id="task-to-do" class="task-to-do"
+                placeholder="What do you need to do?">
+            <button class="task-to-add-btn">add to list</button>
+        </div>
+        <div class="list-to-do wrapper">
+            <ul class="list"></ul>
+            <div class="app-instructions">
+                <p class="instruction">double-click to edit</p>
+                <p class="instruction">click <i class="far fa-circle"></i> to mark as completed</p>
+                <p class="instruction">click <i class="fas fa-ban"></i> to remove element</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/ec09212c33.js" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
