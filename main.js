@@ -39,7 +39,7 @@ function createListElement(text, status) {
     const completedIcon = document.createElement('i');
     completedIcon.className = 'far fa-check-circle completed-task-circle-icon';
     const listInput = document.createElement('p');
-    listInput.className = 'list-element-content-paragraph';
+    listInput.className = status === 'completed' ? 'list-element-content-paragraph task-done' : 'list-element-content-paragraph';
     listInput.textContent = text;
     textContentInput.value = '';
 
@@ -87,7 +87,7 @@ function events() {
         };
     });
 
-    function TaskCircleChanger(taskStatus) {
+    function taskCircleChanger(taskStatus) {
         const task = event.target.closest('li');
         const paragraph = event.target.nextSibling;
         let content = paragraph.innerText;
@@ -110,12 +110,12 @@ function events() {
             event.target.className = 'far fa-check-circle completed-task-circle-icon';
             event.target.nextSibling.classList.add('task-done');
             const status = 'completed';
-            TaskCircleChanger(status)
+            taskCircleChanger(status)
         } else if (event.target.classList.contains('completed-task-circle-icon')) {
             event.target.className = 'far fa-circle checkbox-circle-icon';
             event.target.nextSibling.classList.remove('task-done');
             const status = 'processing-edited';
-            TaskCircleChanger(status)
+            taskCircleChanger(status)
         } else if (event.target.classList.contains('save-changes-button')) {
             closeEditTaskModal(event);
         };
