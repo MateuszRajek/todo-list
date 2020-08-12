@@ -25,8 +25,6 @@ function addTodosToLocalStorage(id, currentStatus, textContent) {
     }
 
     localStorage.setItem(`todos-${id}`, JSON.stringify(todos));
-    // const itemsFromLocalStorage = localStorage.getItem(todos)
-    // console.log('itemsFromLocalStorage: ', JSON.parse(itemsFromLocalStorage))
 }
 
 function createListElement(text, status) {
