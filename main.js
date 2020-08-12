@@ -12,12 +12,24 @@ function main() {
 
 function setId() {
     for (let item in localStorage)
-        if (item.startsWith('todos-id-')) {
+        if (item.startsWith('todos')) {
             latestId++;
         }
 };
 
-function createListElement(text) {
+function addTodosToLocalStorage(id, currentStatus, textContent) {
+    const todos = {
+        'id': id,
+        'task-status': currentStatus,
+        'content': textContent
+    }
+
+    localStorage.setItem(`todos-${id}`, JSON.stringify(todos));
+    // const itemsFromLocalStorage = localStorage.getItem(todos)
+    // console.log('itemsFromLocalStorage: ', JSON.parse(itemsFromLocalStorage))
+}
+
+function createListElement(text, status) {
     const listElement = document.createElement('li');
     listElement.classList.add('list-element');
     const checkboxIcon = document.createElement('i');
@@ -25,12 +37,13 @@ function createListElement(text) {
     const deleteIcon = document.createElement('i');
     deleteIcon.className = 'fas fa-ban cancel-circle-icon';
     const completedIcon = document.createElement('i');
-    completedIcon.className = 'far fa-check-circle completed-task-circle-icon switcher';
+    completedIcon.className = 'far fa-check-circle completed-task-circle-icon';
     const listInput = document.createElement('p');
     listInput.className = 'list-element-content-paragraph';
     listInput.textContent = text;
     textContentInput.value = '';
-    listElement.appendChild(checkboxIcon);
+
+    listElement.appendChild(status === 'completed' ? (completedIcon) : checkboxIcon);
     listElement.appendChild(listInput);
     listElement.appendChild(deleteIcon);
     return listElement;
@@ -40,16 +53,21 @@ function addListElement() {
     const li = createListElement(textContentInput.value);
     ulList.appendChild(li);
     const name = li.textContent;
-    li.id = `todos-id-${latestId}`;
+    li.id = latestId
     latestId++;
-    localStorage.setItem(li.id, name);
+    const status = 'processing';
+    addTodosToLocalStorage(li.id, status, name)
 };
 
 function formListElementsFromLocalStorage() {
+
     for (let item in localStorage) {
-        if (localStorage.hasOwnProperty(item)) {
-            const li = createListElement(localStorage[item]);
-            li.id = item;
+        if (localStorage.hasOwnProperty(item) && item.startsWith('todos')) {
+            const itemsFromLocalStorage = localStorage.getItem(item)
+            const todo = JSON.parse(itemsFromLocalStorage)
+            const status = todo['task-status'];
+            const li = createListElement(todo.content, status);
+            li.id = todo.id;
             ulList.appendChild(li);
         }
     }
@@ -69,19 +87,35 @@ function events() {
         };
     });
 
+    function TaskCircleChanger(taskStatus) {
+        const task = event.target.closest('li');
+        const paragraph = event.target.nextSibling;
+        let content = paragraph.innerText;
+        console.log(content)
+        const status = taskStatus;
+        addTodosToLocalStorage(task.id, status, content)
+    }
+
     ulList.addEventListener('click', function (event) {
+
         if (event.target.classList.contains('cancel-circle-icon')) {
             event.target.parentElement.classList.add('slideout-before-remove')
             setTimeout(() => {
                 event.target.parentElement.remove();
-                localStorage.removeItem(event.target.parentElement.id)
+                const id = event.target.parentElement.id
+                localStorage.removeItem(`todos-${id}`)
+                console.log(event.target.parentElement.id)
             }, 500);
         } else if (event.target.classList.contains('checkbox-circle-icon')) {
             event.target.className = 'far fa-check-circle completed-task-circle-icon';
             event.target.nextSibling.classList.add('task-done');
+            const status = 'completed';
+            TaskCircleChanger(status)
         } else if (event.target.classList.contains('completed-task-circle-icon')) {
             event.target.className = 'far fa-circle checkbox-circle-icon';
             event.target.nextSibling.classList.remove('task-done');
+            const status = 'processing-edited';
+            TaskCircleChanger(status)
         } else if (event.target.classList.contains('save-changes-button')) {
             closeEditTaskModal(event);
         };
@@ -117,7 +151,11 @@ function editTask(event) {
 function closeEditTaskModal(event) {
     const oldText = event.target.closest('.list-element-content-paragraph');
     const modalInput = event.target.parentElement.querySelector('input');
+    const status = 'processing-edited';
+    const id = event.target.closest('li').id;
     oldText.innerText = modalInput.value;
+    console.log(id, oldText)
+    addTodosToLocalStorage(id, status, modalInput.value)
     event.target.parentElement.remove();
 };
 
