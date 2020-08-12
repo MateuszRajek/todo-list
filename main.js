@@ -89,7 +89,6 @@ function events() {
         const task = event.target.closest('li');
         const paragraph = event.target.nextSibling;
         let content = paragraph.innerText;
-        console.log(content)
         const status = taskStatus;
         addTodosToLocalStorage(task.id, status, content)
     }
@@ -102,7 +101,6 @@ function events() {
                 event.target.parentElement.remove();
                 const id = event.target.parentElement.id
                 localStorage.removeItem(`todos-${id}`)
-                console.log(event.target.parentElement.id)
             }, 500);
         } else if (event.target.classList.contains('checkbox-circle-icon')) {
             event.target.className = 'far fa-check-circle completed-task-circle-icon';
@@ -152,7 +150,6 @@ function closeEditTaskModal(event) {
     const status = 'processing-edited';
     const id = event.target.closest('li').id;
     oldText.innerText = modalInput.value;
-    console.log(id, oldText)
     addTodosToLocalStorage(id, status, modalInput.value)
     event.target.parentElement.remove();
 };
